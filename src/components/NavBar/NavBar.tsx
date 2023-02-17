@@ -1,41 +1,32 @@
-import { ReactNode, useState } from "react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { LinkButton } from "../LinkButton/LinkButton";
 
-const NavBar: React.FC = () => {
-  const [active, setActive] = useState([false, false, false, false, false]);
+interface Link {
+  link: string;
+  name: string;
+}
+
+export interface NavBarProps {
+  links: Link[];
+}
+
+const NavBar: React.FC<NavBarProps> = ({ links }) => {
+  const { asPath, push } = useRouter();
 
   return (
     <div className="flex gap-5 w-full absolute justify-end pr-12 pt-4 z-[4]">
-      <LinkButton
-        active={active[0]}
-        onClick={() => setActive([true, false, false, false, false])}
-      >
-        Home
-      </LinkButton>
-      <LinkButton
-        active={active[1]}
-        onClick={() => setActive([false, true, false, false, false])}
-      >
-        About me
-      </LinkButton>
-      <LinkButton
-        active={active[2]}
-        onClick={() => setActive([false, false, true, false, false])}
-      >
-        My Projects
-      </LinkButton>
-      <LinkButton
-        active={active[3]}
-        onClick={() => setActive([false, false, false, true, false])}
-      >
-        Contacts
-      </LinkButton>
-      <LinkButton
-        active={active[4]}
-        onClick={() => setActive([false, false, false, false, true])}
-      >
-        My Skills
-      </LinkButton>
+      {links.map((e, index) => (
+        <LinkButton
+          key={index}
+          active={asPath === `/home${e.link}`}
+          onClick={() => {
+            push(e.link);
+          }}
+        >
+          {e.name}
+        </LinkButton>
+      ))}
     </div>
   );
 };
